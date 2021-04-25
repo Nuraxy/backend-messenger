@@ -1,0 +1,11 @@
+openapi-processor-mapping: v2
+
+options:
+  package-name: com.xarun.backendmessenger.openapi
+  bean-validation: true
+
+map:
+  result: org.springframework.http.ResponseEntity
+
+  types:
+    - type: array => java.util.List

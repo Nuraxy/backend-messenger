@@ -1,0 +1,686 @@
+openapi: 3.0.1
+info:
+  title: Schnittstellendokumentation
+  description: "Everything you need for the authorization, you can see when you click\
+    \ on the 'Authorize button' \n You can use `any Value` for testing the Authorization.\
+    \ \n - Header: Content Type: application/json \n - Header: Accept: application/json\
+    \ \n \n The following attachment is only necessary because the authorization is\
+    \ missing in some converting types: \n Authentication: token:string"
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+tags:
+  - name: user
+    description: ""
+paths:
+  /users/register:
+    post:
+      tags:
+        - user
+      summary: Add a new user by Email, Password and Name to the database
+      operationId: registerUser
+      requestBody:
+        description: "The terms to create this user object are: A unique Name and\
+          \ Email is needed. \n The Email must be a valid Email. \n The Password needs\
+          \ at least one integer, (one small letter, one big Letter) and needs to be\
+          \ 6 characters long."
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UserResource'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        400:
+          description: 400 If E-mail or name isn't unique
+      x-codegen-request-body-name: body
+
+  /users/authenticate:
+    post:
+      tags:
+        - user
+      summary: Authenticate the user by name or email (represented by nameOrEmail)
+        and password
+      operationId: AuthenticateUser
+      requestBody:
+        description: 'Represented by {nameOrEmail: string}'
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/LoginResource'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/TokenResource'
+        401:
+          description: if name/email and/or password is wrong
+        x-codegen-request-body-name: body
+
+  /users/forgotPassword:
+    post:
+      tags:
+        - user
+      summary: forgot pasword
+      operationId: ForgotPassword
+      requestBody:
+        description: 'Represented by {Email: string}'
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/ForgotPassword'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        401:
+          description: user with this email dosent exist
+        x-codegen-request-body-name: body
+
+  /users/verify:
+    get:
+      tags:
+        - user
+      summary: Get one user by Verification-Key from database
+      operationId: getUserByKey
+      parameters:
+        - name: key
+          required: true
+          in: query
+          description: key to verify user
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        401:
+          description: If user isn't logged in or doesn't have the permission
+      security:
+        - api_key: [ ]
+
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users from database
+      operationId: getAllUsers
+      parameters:
+        - name: name
+          required: false
+          in: query
+          description: term name search
+          schema:
+            type: string
+            nullable: true
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each user object
+          content:
+            application/json:
+              schema:
+                type: list
+                items:
+                  $ref: '#/components/schemas/UserResource'
+      security:
+        - api_key: []
+
+  /users/public:
+    get:
+      tags:
+        - user
+      summary: Get all public users from database
+      operationId: getAllPublicUsers
+      parameters:
+        - name: name
+          required: false
+          in: query
+          description: term name search
+          schema:
+            type: string
+            nullable: true
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each user object
+          content:
+            application/json:
+              schema:
+                type: list
+                items:
+                  $ref: '#/components/schemas/UserResource'
+        401:
+          description: If user isn't logged in or doesn't have the permission
+      security:
+        - api_key: []
+
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get user by user userId
+      operationId: getUserById
+      parameters:
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+      security:
+        - api_key: []
+
+    put:
+      tags:
+        - user
+      summary: Update current user in database except password by userId
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          description: userId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: Authentication
+          in: header
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        description: 'Update Name and Email of the current user Object. Name and Email
+          needs to be unique and the Email must be a valid Email. '
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateResource'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        401:
+          description: if User isn't logged in or doesn't have the permission
+        400:
+          description: If user name or email already exist in data base
+      security:
+        - api_key: []
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - user
+      summary: Delete user object and all corresponding tokens in database
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          description: userId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: Authentication
+          in: query
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content: {}
+      security:
+        - api_key: []
+
+  /users/friends/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get all friends by user userId
+      operationId: getFriendsByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          required: false
+          in: query
+          description: term name search
+          schema:
+            type: string
+            nullable: true
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each friend user object
+          content:
+            application/json:
+              schema:
+                type: list
+                items:
+                  $ref: '#/components/schemas/UserResource'
+      security:
+        - api_key: []
+
+  /users/friendRequest/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get all requests
+      operationId: getFriendRequestByUserId
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+            format: int64
+          required: true
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each friend user object
+          content:
+            application/json:
+              schema:
+                type: list
+                items:
+                  $ref: '#/components/schemas/UserResource'
+      security:
+        - api_key: []
+
+  /users/requestedFriends/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get all of your requests
+      operationId: findAllRequestedFriendsByUserId
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: integer
+            format: int64
+          required: true
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each of your requests user object
+          content:
+            application/json:
+              schema:
+                type: list
+                items:
+                  $ref: '#/components/schemas/UserResource'
+      security:
+        - api_key: []
+
+  /users/friends/{userId}/{friendId}:
+    post:
+      tags:
+        - user
+      summary: Update current user in database (ADD friend)
+      operationId: addFriendToUser
+      parameters:
+        - in: path
+          name: userId
+          description: userId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: friendId
+          description: friendId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        401:
+          description: if User isn't logged in or doesn't have the permission
+        400:
+          description: If user name or email already exist in data base
+      security:
+        - api_key: []
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - user
+      summary: Delete friend of user in user_friend table
+      operationId: removeFriendById
+      parameters:
+        - in: path
+          name: userId
+          description: userId for connection
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: friendId
+          description: friendId for connection
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content: {}
+      security:
+        - api_key: []
+
+  /users/friends/{userId}/{friendId}/{confirmed}:
+    put:
+      tags:
+        - user
+      summary: Confirm or delete FriendRequest
+      operationId: confirmFriendsByUserIdAndFriendId
+      parameters:
+        - in: path
+          name: userId
+          description: userId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: friendId
+          description: friendId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: confirmed
+          description: confim or decline friendRequest
+          required: true
+          schema:
+            type: boolean
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        401:
+          description: if User isn't logged in or doesn't have the permission
+      security:
+        - api_key: []
+      x-codegen-request-body-name: body
+
+  /users/password/{userId}:
+    put:
+      tags:
+        - user
+      summary: Update paKssword of current User in database by userId
+      operationId: updateUserPassword
+      parameters:
+        - name: userId
+          in: path
+          description: userId that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        description: enter the current password and a newPassword which contains at
+          least one integer, (one small letter, one big Letter) and needs to be 6 characters
+          long.
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/PasswordResource'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        400:
+          description: if password isn't equals current password
+        401:
+          description: if User isn't logged in or doesn't have the permission
+      security:
+        - api_key: []
+      x-codegen-request-body-name: body
+
+  /users/logout/{tokenId}:
+    delete:
+      tags:
+        - user
+      summary: Delete token of user in database
+      operationId: logoutUser
+      parameters:
+        - name: tokenId
+          in: path
+          description: tokenId that need to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authentication
+          description: 'Authentication: tokenValue:string'
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        401:
+          description: if User isn't logged in or doesn't have the permission
+      security:
+        - api_key: []
+
+
+
+########################################################################################################################
+components:
+  schemas:
+
+    UserResource:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          nullable: true
+        name:
+          type: string
+          pattern: '^[^@]+$'
+        email:
+          type: string
+        password:
+          type: string
+          nullable: true
+        registerKey:
+          type: string
+          nullable: true
+        confirmed:
+          type: boolean
+          nullable: true
+        userRole:
+          $ref: '#/components/schemas/UserRoleResource'
+        loginMode:
+          type: boolean
+          nullable: true
+
+    LoginResource:
+      type: object
+      properties:
+        nameOrEmail:
+          type: string
+        password:
+          type: string
+        loginMode:
+          type: boolean
+          nullable: true
+
+    ForgotPassword:
+      type: object
+      properties:
+        email:
+          type: string
+
+    UpdateResource:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        confirmed:
+          type: boolean
+        registerKey:
+          type: string
+          nullable: true
+        userRole:
+          $ref: '#/components/schemas/UserRoleResource'
+
+    PasswordResource:
+      type: object
+      properties:
+        password:
+          type: string
+        newPassword:
+          type: string
+
+    UserRoleResource:
+      type: object
+      properties:
+        roleId:
+          type: integer
+          format: int64
+        roleName:
+          type: string
+
+    TokenResource:
+      type: object
+      properties:
+        tokenId:
+          type: integer
+          format: int64
+        tokenValue:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResource'
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      description: 'Authentication: tokenValue:string'
+      name: Authentication
+      in: header
