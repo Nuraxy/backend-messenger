@@ -33,8 +33,12 @@ dependencies {
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
+	// for MySQL-Database
 	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'mysql:mysql-connector-java'
+
+	// for json in Database
+	implementation 'com.vladmihalcea:hibernate-types-52:2.10.1'
 }
 
 openapiProcessor {
@@ -63,7 +67,6 @@ sourceSets {
 }
 
 compileJava.dependsOn('processSpring')
-
 
 test {
 	useJUnitPlatform()

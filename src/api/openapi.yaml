@@ -583,7 +583,6 @@ paths:
         - api_key: []
 
 
-
 ########################################################################################################################
 components:
   schemas:
@@ -614,6 +613,8 @@ components:
         loginMode:
           type: boolean
           nullable: true
+        publicKey:
+          $ref: "#/components/schemas/PublicKeyResource"
 
     LoginResource:
       type: object
@@ -622,9 +623,6 @@ components:
           type: string
         password:
           type: string
-        loginMode:
-          type: boolean
-          nullable: true
 
     ForgotPassword:
       type: object
@@ -649,6 +647,8 @@ components:
           nullable: true
         userRole:
           $ref: '#/components/schemas/UserRoleResource'
+        publicKey:
+          $ref: "#/components/schemas/PublicKeyResource"
 
     PasswordResource:
       type: object
@@ -678,9 +678,19 @@ components:
         user:
           $ref: '#/components/schemas/UserResource'
 
+    PublicKeyResource:
+      type: object
+      properties:
+       # need for generate to replace it with generic JSON-Node (gradle-plugin)
+        id:
+          type: integer
+          format: int64
+
   securitySchemes:
     api_key:
       type: apiKey
       description: 'Authentication: tokenValue:string'
       name: Authentication
       in: header
+
+

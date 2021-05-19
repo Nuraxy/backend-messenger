@@ -1,16 +1,29 @@
 package com.xarun.backendmessenger.webSocket;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+
 public class Message {
 
+    @Column(name="id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long messageId;
+
+    @Column(name="name")
     private String name;
 
+    @Column(name="to")
     private String to;
 
+    @Column(name="message")
     private String message;
 
-    private Long keyE;
-
-    private Long keyN;
+    @Type(type = "json")
+    @Column(name = "public_key", columnDefinition = "json")
+    private JsonNode publicKey;
 
     public String getName() {
         return name;
@@ -18,6 +31,14 @@ public class Message {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
     }
 
     public String getTo() {
@@ -36,30 +57,22 @@ public class Message {
         this.message = message;
     }
 
-    public Long getKeyE() {
-        return keyE;
+    public JsonNode getPublicKey() {
+        return publicKey;
     }
 
-    public void setKeyE(Long keyE) {
-        this.keyE = keyE;
-    }
-
-    public Long getKeyN() {
-        return keyN;
-    }
-
-    public void setKeyN(Long keyN) {
-        this.keyN = keyN;
+    public void setPublicKey(JsonNode publicKey) {
+        this.publicKey = publicKey;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "name='" + name + '\'' +
+                "messageId=" + messageId +
+                ", name='" + name + '\'' +
                 ", to='" + to + '\'' +
                 ", message='" + message + '\'' +
-                ", keyE=" + keyE +
-                ", keyN=" + keyN +
+                ", publicKey=" + publicKey +
                 '}';
     }
 }

@@ -6,6 +6,7 @@ options:
 
 map:
   result: org.springframework.http.ResponseEntity
-
   types:
     - type: array => java.util.List
+    - type: PublicKeyResource => com.fasterxml.jackson.databind.JsonNode
+

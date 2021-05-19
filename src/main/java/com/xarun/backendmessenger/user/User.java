@@ -1,12 +1,17 @@
 package com.xarun.backendmessenger.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.xarun.backendmessenger.user.userRoles.UserRole;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Table(name = "user")
+@TypeDef(name = "json", typeClass = JsonStringType.class)
 @Entity
 public class User {
 
@@ -46,11 +51,9 @@ public class User {
     @Column(name="session_id")
     private String sessionId;
 
-    @Column(name="public_key_e")
-    private Long publicKeyE;
-
-    @Column(name="public_key_n")
-    private Long publicKeyN;
+    @Type(type = "json")
+    @Column(name = "public_key", columnDefinition = "json")
+    private JsonNode publicKey;
 
     public Long getUserId() {
         return userId;
@@ -120,8 +123,8 @@ public class User {
         return registerKey;
     }
 
-    public void setRegisterKey(String register_key) {
-        this.registerKey = register_key;
+    public void setRegisterKey(String registerKey) {
+        this.registerKey = registerKey;
     }
 
     public Boolean getLoginMode() {
@@ -140,20 +143,12 @@ public class User {
         this.sessionId = sessionId;
     }
 
-    public Long getPublicKeyE() {
-        return publicKeyE;
+    public JsonNode getPublicKey() {
+        return publicKey;
     }
 
-    public void setPublicKeyE(Long publicKeyE) {
-        this.publicKeyE = publicKeyE;
-    }
-
-    public Long getPublicKeyN() {
-        return publicKeyN;
-    }
-
-    public void setPublicKeyN(Long publicKeyN) {
-        this.publicKeyN = publicKeyN;
+    public void setPublicKey(JsonNode publicKey) {
+        this.publicKey = publicKey;
     }
 
     @Override
@@ -170,8 +165,7 @@ public class User {
                 ", registerKey='" + registerKey + '\'' +
                 ", loginMode=" + loginMode +
                 ", sessionId='" + sessionId + '\'' +
-                ", publicKeyE=" + publicKeyE +
-                ", publicKeyN=" + publicKeyN +
+                ", publicKey=" + publicKey +
                 '}';
     }
 }

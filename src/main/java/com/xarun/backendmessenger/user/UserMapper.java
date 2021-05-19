@@ -12,6 +12,7 @@ public interface UserMapper {
     @Mapping(target = "registerKey", ignore = true)
     UserResource mapToResource(User user);
 
+    @Mapping(target = "sessionId", source = "")
     @Mapping(target = "registrationDate", source = "")
     @Mapping(target = "salt", ignore = true)
     User mapToUserDomain(UserResource userResource);

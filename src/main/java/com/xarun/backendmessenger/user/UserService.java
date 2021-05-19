@@ -1,9 +1,12 @@
 package com.xarun.backendmessenger.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.xarun.backendmessenger.email.SendEmailService;
 import com.xarun.backendmessenger.encryption.HashService;
 import com.xarun.backendmessenger.encryption.SecureRandomService;
 import com.xarun.backendmessenger.openapi.model.LoginResource;
+import com.xarun.backendmessenger.openapi.model.PublicKeyResource;
+import com.xarun.backendmessenger.openapi.model.UpdateResource;
 import com.xarun.backendmessenger.token.TokenRepository;
 import com.xarun.backendmessenger.user.exception.UserNotFound;
 import com.xarun.backendmessenger.user.userRoles.UserRole;
@@ -109,29 +112,27 @@ public class UserService {
     }
 
     public User updateProfile(Long userId,
-                              String name,
-                              String email,
-                              String userRoleName,
-                              boolean confirmed,
+                              UpdateResource body,
                               boolean allowAdmin) {
         User currentUser = findById(userId);
-        currentUser.setName(name);
-        currentUser.setEmail(email);
-        if (confirmed) {
-            currentUser.setConfirmed(confirmed);
+        currentUser.setName(body.getName());
+        currentUser.setEmail(body.getEmail());
+        currentUser.setPublicKey(body.getPublicKey());
+        if (body.getConfirmed()) {
+            currentUser.setConfirmed(body.getConfirmed());
         }
         UserRole userRoleAdmin = userRoleRepository.findByRoleName("Admin").orElseThrow(UserNotFound::new);
-        UserRole currentUserRole = userRoleRepository.findByRoleName(userRoleName).orElseThrow(UserNotFound::new);
+        UserRole currentUserRole = userRoleRepository.findByRoleName(body.getUserRole().getRoleName()).orElseThrow(UserNotFound::new);
         // input role nicht Admin und currentUser = Admin
-        if (!userRoleName.equals(userRoleAdmin.getRoleName()) && currentUser.getUserRole().getRoleName().equals(userRoleAdmin.getRoleName())) {
+        if (!body.getUserRole().getRoleName().equals(userRoleAdmin.getRoleName()) && currentUser.getUserRole().getRoleName().equals(userRoleAdmin.getRoleName())) {
             if (enoughAdmins()) {
                 currentUser.setUserRole(currentUserRole);
             }
             //wenn Admin user zu Admin macht
-        } else if (userRoleName.equals("Admin") && allowAdmin) {
+        } else if (body.getUserRole().getRoleName().equals("Admin") && allowAdmin) {
             currentUser.setUserRole(currentUserRole);
             //wenn norm User seine Rolle ändert
-        } else if (!userRoleName.equals("Admin") && !currentUser.getUserRole().getRoleName().equals("Admin")) {
+        } else if (!body.getUserRole().getRoleName().equals("Admin") && !currentUser.getUserRole().getRoleName().equals("Admin")) {
             currentUser.setUserRole(currentUserRole);
         }
         return getSave(currentUser);
@@ -262,20 +263,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void setLoginMode(LoginResource body) {
-        User currentUser = findFirstByNameOrEmail(body.getNameOrEmail());
-        currentUser.setLoginMode(body.getLoginMode() != null);
-    }
+//    public void setLoginMode(LoginResource body) {
+//        User currentUser = findFirstByNameOrEmail(body.getNameOrEmail());
+//        currentUser.setLoginMode(body.getLoginMode() != null);
+//    }
 
     //websocket send message to every user also Admins
     public User findByName(String name) {
         return userRepository.findByName(name);
     }
 
-    public void greeting(User user, String sessionId, Message message) {
+    public void greeting(User user, String sessionId) {
         user.setSessionId(sessionId);
-        user.setPublicKeyE(message.getKeyE());
-        user.setPublicKeyN(message.getKeyN());
+        user.setPublicKey(user.getPublicKey());
         userRepository.save(user);
     }
 

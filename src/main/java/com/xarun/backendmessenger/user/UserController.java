@@ -76,7 +76,7 @@ public class UserController implements UserApi {
         if (userService.existsByNameOrEmailAndPassword(body.getNameOrEmail(), body.getPassword())) {
             User currentUser = userService.findFirstByNameOrEmail(body.getNameOrEmail());
             if (currentUser.isConfirmed()) {
-                userService.setLoginMode(body);
+//                userService.setLoginMode(body);
                 final Token token = tokenService.generateToken(body);
                 final TokenResource tokenResource = tokenMapper.mapToResource(token);
                 this.tokenService.hashGenerateToken(token);
@@ -191,12 +191,7 @@ public class UserController implements UserApi {
         } else {
             if (!userService.existsByName(body.getName()) || currentUser.getName().equals(body.getName()) || allowAdmin) {
                 if (!userService.existsByEmail(body.getEmail()) || currentUser.getEmail().equals(body.getEmail()) || allowAdmin) {
-                    currentUser = userService.updateProfile(userId,
-                            body.getName(),
-                            body.getEmail(),
-                            body.getUserRole().getRoleName(),
-                            body.getConfirmed(),
-                            allowAdmin);
+                    currentUser = userService.updateProfile(userId, body, allowAdmin);
                     return ResponseEntity.ok(userMapper.mapToResource(currentUser));
                 } else {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

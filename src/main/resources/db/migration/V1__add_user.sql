@@ -10,13 +10,13 @@ create table user(
     register_key varchar(255) DEFAULT null,
     login_mode boolean DEFAULT false,
     session_id VARCHAR(255) NUll,
-    public_key_e bigint NULL,
-    public_key_n bigint NULL,
+    public_key JSON NULL,
 
     constraint pk_user primary key (id),
     constraint unique_name unique (name),
     constraint unique_email unique (email)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 create table user_role(
     id bigint auto_increment,

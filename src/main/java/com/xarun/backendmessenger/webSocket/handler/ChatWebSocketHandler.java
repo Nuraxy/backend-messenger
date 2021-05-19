@@ -9,10 +9,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -101,7 +98,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if(message.getTo().equals("Greeting")){
             System.out.println(session.getId());
             User user = userService.findByName(message.getName());
-            userService.greeting(user, session.getId(), message);
+            userService.greeting(user, session.getId());
             System.out.println(userService.findByName(message.getName()));
         }else {
             User user = userService.findByName(message.getTo());
