@@ -1,11 +1,8 @@
 package com.xarun.backendmessenger.user;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.xarun.backendmessenger.email.SendEmailService;
 import com.xarun.backendmessenger.encryption.HashService;
 import com.xarun.backendmessenger.encryption.SecureRandomService;
-import com.xarun.backendmessenger.openapi.model.LoginResource;
-import com.xarun.backendmessenger.openapi.model.PublicKeyResource;
 import com.xarun.backendmessenger.openapi.model.UpdateResource;
 import com.xarun.backendmessenger.token.TokenRepository;
 import com.xarun.backendmessenger.user.exception.UserNotFound;
@@ -32,6 +29,7 @@ public class UserService {
     private final SecureRandomService secureRandomService;
     private final UserRoleRepository userRoleRepository;
     private final SendEmailService sendEmailService;
+    private final UserMapper userMapper;
 
     public UserService(
             UserRepository userRepository,
@@ -40,7 +38,8 @@ public class UserService {
             UserFriendRepository userFriendRepository,
             SecureRandomService secureRandomService,
             UserRoleRepository userRoleRepository,
-            SendEmailService sendEmailService
+            SendEmailService sendEmailService,
+            UserMapper userMapper
     ) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
@@ -49,6 +48,7 @@ public class UserService {
         this.secureRandomService = secureRandomService;
         this.userRoleRepository = userRoleRepository;
         this.sendEmailService = sendEmailService;
+        this.userMapper = userMapper;
     }
 
     public User registerUser(User userToSave) {
@@ -273,12 +273,18 @@ public class UserService {
         return userRepository.findByName(name);
     }
 
-    public void greeting(User user, String sessionId) {
+    public void greeting(Message message, String sessionId) {
+        User user = findByName(message.getName());
         user.setSessionId(sessionId);
-        user.setPublicKey(user.getPublicKey());
+        user.setPublicKey(message.getPublicKey());
         userRepository.save(user);
     }
 
+    public void removeSession(String id) {
+        User user = userRepository.findBySessionId(id);
+        user.setSessionId(null);
+        userRepository.save(user);
+    }
 }
 
 

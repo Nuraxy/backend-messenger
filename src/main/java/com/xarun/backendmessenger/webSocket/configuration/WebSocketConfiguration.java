@@ -21,7 +21,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
         this.userService = userService;
     }
 
-
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
         webSocketHandlerRegistry.addHandler(getChatWebSocketHandler(),CHAT_ENDPOINT)
