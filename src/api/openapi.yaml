@@ -139,7 +139,7 @@ paths:
           content:
             application/json:
               schema:
-                type: list
+                type: array
                 items:
                   $ref: '#/components/schemas/UserResource'
       security:
@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                type: list
+                type: array
                 items:
                   $ref: '#/components/schemas/UserResource'
         401:
@@ -280,6 +280,42 @@ paths:
       security:
         - api_key: []
 
+#  /users/sort-column-search:
+#    get:
+#      tags:
+#        - user
+#      summary: search in all users with search term
+#      operationId: getUsersPageBySearch
+#      parameters:
+#        - in: header
+#          name: Authentication
+#          description: 'Authentication: tokenValue:string'
+#          schema:
+#            type: string
+#            format: uuid
+#          required: true
+#        - name: search
+#          in: query
+#          required: false
+#          schema:
+#            type: string
+#          description: Search parameter that must be contains in the cycles name.
+#        - name: pageable
+#          in: query
+#          required: false
+#          schema:
+#            $ref: '#/components/schemas/Pageable'
+#          description: Pageable values
+#      responses:
+#        200:
+#          description: successful operation
+#          content:
+#            'application/json':
+#              schema:
+#                $ref: '#/components/schemas/UserPage'
+#      security:
+#        - api_key: [ ]
+
   /users/friends/{userId}:
     get:
       tags:
@@ -313,7 +349,7 @@ paths:
           content:
             application/json:
               schema:
-                type: list
+                type: array
                 items:
                   $ref: '#/components/schemas/UserResource'
       security:
@@ -345,7 +381,7 @@ paths:
           content:
             application/json:
               schema:
-                type: list
+                type: array
                 items:
                   $ref: '#/components/schemas/UserResource'
       security:
@@ -377,7 +413,7 @@ paths:
           content:
             application/json:
               schema:
-                type: list
+                type: array
                 items:
                   $ref: '#/components/schemas/UserResource'
       security:
@@ -583,6 +619,8 @@ paths:
         - api_key: []
 
 
+
+
 ########################################################################################################################
 components:
   schemas:
@@ -685,6 +723,39 @@ components:
         id:
           type: integer
           format: int64
+
+    Pageable:
+      description: Pageable query parameters with sort
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        sort:
+          type: string
+
+    Page:
+      description: Page response without content property but sort
+      type: object
+      properties:
+        number:
+          type: integer
+        size:
+          type: integer
+        sort:
+          type: string
+
+    UserPage:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Page"
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserResource"
 
   securitySchemes:
     api_key:
