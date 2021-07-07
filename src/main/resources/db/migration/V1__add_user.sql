@@ -10,7 +10,7 @@ create table user(
     register_key varchar(255) DEFAULT null,
     login_mode boolean DEFAULT false,
     session_id VARCHAR(255) NUll,
-    public_key JSON NULL,
+    public_key VARCHAR(255) NULL,
 
     constraint pk_user primary key (id),
     constraint unique_name unique (name),

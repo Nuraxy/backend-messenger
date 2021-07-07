@@ -1,9 +1,7 @@
 package com.xarun.backendmessenger.user;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.xarun.backendmessenger.user.userRoles.UserRole;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
@@ -45,15 +43,11 @@ public class User {
     @Column(name="register_key")
     private String registerKey;
 
-    @Column(name="loginMode")
-    private Boolean loginMode;
-
     @Column(name="session_id")
     private String sessionId;
 
-    @Type(type = "json")
-    @Column(name = "public_key", columnDefinition = "json")
-    private JsonNode publicKey;
+    @Column(name = "public_key")
+    private String publicKey;
 
     public Long getUserId() {
         return userId;
@@ -127,14 +121,6 @@ public class User {
         this.registerKey = registerKey;
     }
 
-    public Boolean getLoginMode() {
-        return loginMode;
-    }
-
-    public void setLoginMode(Boolean loginMode) {
-        this.loginMode = loginMode;
-    }
-
     public String getSessionId() {
         return sessionId;
     }
@@ -143,11 +129,11 @@ public class User {
         this.sessionId = sessionId;
     }
 
-    public JsonNode getPublicKey() {
+    public String getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(JsonNode publicKey) {
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 
@@ -163,9 +149,8 @@ public class User {
                 ", confirmed=" + confirmed +
                 ", registrationDate=" + registrationDate +
                 ", registerKey='" + registerKey + '\'' +
-                ", loginMode=" + loginMode +
                 ", sessionId='" + sessionId + '\'' +
-                ", publicKey=" + publicKey +
+                ", publicKey='" + publicKey + '\'' +
                 '}';
     }
 }

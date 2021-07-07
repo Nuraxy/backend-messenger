@@ -8,7 +8,7 @@ info:
     \ missing in some converting types: \n Authentication: token:string"
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/
+  - url: http://localhost:8079/
 tags:
   - name: user
     description: ""
@@ -652,7 +652,9 @@ components:
           type: boolean
           nullable: true
         publicKey:
-          $ref: "#/components/schemas/PublicKeyResource"
+          type: string
+          nullable: true
+#          $ref: "#/components/schemas/PublicKeyResource"
 
     LoginResource:
       type: object
@@ -686,7 +688,9 @@ components:
         userRole:
           $ref: '#/components/schemas/UserRoleResource'
         publicKey:
-          $ref: "#/components/schemas/PublicKeyResource"
+          type: string
+          nullable: true
+#          $ref: "#/components/schemas/PublicKeyResource"
 
     PasswordResource:
       type: object
@@ -716,13 +720,13 @@ components:
         user:
           $ref: '#/components/schemas/UserResource'
 
-    PublicKeyResource:
-      type: object
-      properties:
-       # need for generate to replace it with generic JSON-Node (gradle-plugin)
-        id:
-          type: integer
-          format: int64
+#    PublicKeyResource:
+#      type: object
+#      properties:
+#       # need for generate to replace it with generic JSON-Node (gradle-plugin)
+#        id:
+#          type: integer
+#          format: int64
 
     Pageable:
       description: Pageable query parameters with sort

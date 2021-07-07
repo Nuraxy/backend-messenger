@@ -43,16 +43,12 @@ public class TokenInterceptor implements HandlerInterceptor {
                     if (token.getUser().getUserRole().getRoleName().equals(request.getHeader("UserRole"))) {
                         if (!(handler instanceof HandlerMethod) ||
                                 ((HandlerMethod) handler).getMethod().getAnnotation(NoSessionReset.class) == null) {
-                            if (token.getLastRequest().plusMinutes(15).isAfter(currentDate) && !token.getUser().getLoginMode()) {
+                            if (token.getLastRequest().plusMinutes(15).isAfter(currentDate)) {
                                 tokenService.updateLastRequest(token, currentDate);
                             } else {
-                                if (!token.getUser().getLoginMode()) {
-                                    tokenService.delete(token.getTokenId());
-                                    returnUnauthorized();
-                                    return false;
-                                } else {
-                                    tokenService.updateLastRequest(token, currentDate);
-                                }
+                                tokenService.delete(token.getTokenId());
+                                returnUnauthorized();
+                                return false;
                             }
                         }
                         return true;

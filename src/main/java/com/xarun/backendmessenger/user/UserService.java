@@ -276,7 +276,7 @@ public class UserService {
     public void greeting(Message message, String sessionId) {
         User user = findByName(message.getName());
         user.setSessionId(sessionId);
-        user.setPublicKey(message.getPublicKey());
+        user.setPublicKey(message.getMessage());
         userRepository.save(user);
     }
 

@@ -31,12 +31,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String json = messagePackage.getPayload();
         ObjectMapper objectMapper = new ObjectMapper();
         Message message = objectMapper.readValue(json, Message.class);
-        if (message.getTo().equals("Greeting")) {
+        if ("Greeting".equals(message.getMessageType())) {
             System.out.println(session.getId());
             userService.greeting(message, session.getId());
             System.out.println(userService.findByName(message.getName()));
         } else {
-            User userReceiver = userService.findByName(message.getTo());
+            User userReceiver = userService.findById(message.getTo());
             webSocketSessions.get(userReceiver.getSessionId()).sendMessage(messagePackage);
         }
     }

@@ -8,6 +8,6 @@ map:
   result: org.springframework.http.ResponseEntity
   types:
     - type: array => java.util.List
-    - type: PublicKeyResource => com.fasterxml.jackson.databind.JsonNode
+#    - type: PublicKeyResource => com.fasterxml.jackson.databind.JsonNode
     - type: Pageable => org.springframework.data.domain.Pageable
     - type: ProgramCyclePage => org.springframework.data.domain.Page<com.xarun.backendmessenger.openapi.model.UserResource>
