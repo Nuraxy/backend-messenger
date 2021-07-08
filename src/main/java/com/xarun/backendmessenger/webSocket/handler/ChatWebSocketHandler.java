@@ -32,6 +32,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         Message message = objectMapper.readValue(json, Message.class);
         if ("Greeting".equals(message.getMessageType())) {
+
             System.out.println(session.getId());
             userService.greeting(message, session.getId());
             System.out.println(userService.findByName(message.getName()));
