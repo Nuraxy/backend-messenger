@@ -32,13 +32,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         Message message = objectMapper.readValue(json, Message.class);
         if ("Greeting".equals(message.getMessageType())) {
-
-            System.out.println(session.getId());
             userService.greeting(message, session.getId());
-            System.out.println(userService.findByName(message.getName()));
         } else {
-            User userReceiver = userService.findById(message.getTo());
-            webSocketSessions.get(userReceiver.getSessionId()).sendMessage(messagePackage);
+            User receiver = userService.findById(message.getReceiver());
+            webSocketSessions.get(receiver.getSessionId()).sendMessage(messagePackage);
+
+            User sender = userService.findById(message.getSender());
+            webSocketSessions.get(sender.getSessionId()).sendMessage(messagePackage);
         }
     }
 // -----Groups----------------------------------------------------

@@ -9,25 +9,21 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
-    @Column(name="name")
-    private String name;
-
-    @Column(name="to")
-    private Long to;
-
     @Column(name="message_type")
     private String messageType;
 
-    @Column(name="message")
-    private String message;
+    @Column(name="sender")
+    private Long sender;
 
-    public String getName() {
-        return name;
-    }
+    @Column(name="message_to_sender")
+    private String messageToSender;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column(name="receiver")
+    private Long receiver;
+
+    @Column(name="message_to_receiver")
+    private String messageToReceiver;
+
 
     public Long getMessageId() {
         return messageId;
@@ -35,14 +31,6 @@ public class Message {
 
     public void setMessageId(Long messageId) {
         this.messageId = messageId;
-    }
-
-    public Long getTo() {
-        return to;
-    }
-
-    public void setTo(Long to) {
-        this.to = to;
     }
 
     public String getMessageType() {
@@ -53,22 +41,47 @@ public class Message {
         this.messageType = messageType;
     }
 
-    public String getMessage() {
-        return message;
+    public Long getSender() {
+        return sender;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setSender(Long sender) {
+        this.sender = sender;
+    }
+
+    public String getMessageToSender() {
+        return messageToSender;
+    }
+
+    public void setMessageToSender(String messageToSender) {
+        this.messageToSender = messageToSender;
+    }
+
+    public Long getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Long receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getMessageToReceiver() {
+        return messageToReceiver;
+    }
+
+    public void setMessageToReceiver(String messageToReceiver) {
+        this.messageToReceiver = messageToReceiver;
     }
 
     @Override
     public String toString() {
         return "Message{" +
                 "messageId=" + messageId +
-                ", name='" + name + '\'' +
-                ", to=" + to +
                 ", messageType='" + messageType + '\'' +
-                ", message='" + message + '\'' +
+                ", sender=" + sender +
+                ", messageToSender='" + messageToSender + '\'' +
+                ", receiver=" + receiver +
+                ", messageToReceiver='" + messageToReceiver + '\'' +
                 '}';
     }
 }
