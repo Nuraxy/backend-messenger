@@ -33,12 +33,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Message message = objectMapper.readValue(json, Message.class);
         if ("Greeting".equals(message.getMessageType())) {
             userService.greeting(message, session.getId());
+            System.out.println("Geöffnet");
         } else {
             User receiver = userService.findById(message.getReceiver());
             webSocketSessions.get(receiver.getSessionId()).sendMessage(messagePackage);
-
-            User sender = userService.findById(message.getSender());
-            webSocketSessions.get(sender.getSessionId()).sendMessage(messagePackage);
+            System.out.println("Message");
         }
     }
 // -----Groups----------------------------------------------------

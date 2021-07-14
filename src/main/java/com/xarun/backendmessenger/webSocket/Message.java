@@ -15,15 +15,14 @@ public class Message {
     @Column(name="sender")
     private Long sender;
 
-    @Column(name="message_to_sender")
-    private String messageToSender;
-
     @Column(name="receiver")
     private Long receiver;
 
-    @Column(name="message_to_receiver")
-    private String messageToReceiver;
+    @Column(name="chat_id")
+    private String chatId;
 
+    @Column(name="message")
+    private String message;
 
     public Long getMessageId() {
         return messageId;
@@ -49,14 +48,6 @@ public class Message {
         this.sender = sender;
     }
 
-    public String getMessageToSender() {
-        return messageToSender;
-    }
-
-    public void setMessageToSender(String messageToSender) {
-        this.messageToSender = messageToSender;
-    }
-
     public Long getReceiver() {
         return receiver;
     }
@@ -65,12 +56,20 @@ public class Message {
         this.receiver = receiver;
     }
 
-    public String getMessageToReceiver() {
-        return messageToReceiver;
+    public String getChatId() {
+        return chatId;
     }
 
-    public void setMessageToReceiver(String messageToReceiver) {
-        this.messageToReceiver = messageToReceiver;
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
@@ -79,9 +78,9 @@ public class Message {
                 "messageId=" + messageId +
                 ", messageType='" + messageType + '\'' +
                 ", sender=" + sender +
-                ", messageToSender='" + messageToSender + '\'' +
                 ", receiver=" + receiver +
-                ", messageToReceiver='" + messageToReceiver + '\'' +
+                ", chatId='" + chatId + '\'' +
+                ", message='" + message + '\'' +
                 '}';
     }
 }
