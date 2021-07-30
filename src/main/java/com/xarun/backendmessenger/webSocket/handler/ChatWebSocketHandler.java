@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xarun.backendmessenger.user.User;
 import com.xarun.backendmessenger.user.UserService;
 import com.xarun.backendmessenger.webSocket.Message;
+import com.xarun.backendmessenger.webSocket.MessageService;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -16,9 +17,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> webSocketSessions = new HashMap<>();
     private final UserService userService;
+    private final MessageService messageService;
 
-    public ChatWebSocketHandler(UserService userService) {
+    public ChatWebSocketHandler(UserService userService, MessageService messageService) {
         this.userService = userService;
+        this.messageService = messageService;
     }
 
     @Override
@@ -31,11 +34,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String json = messagePackage.getPayload();
         ObjectMapper objectMapper = new ObjectMapper();
         Message message = objectMapper.readValue(json, Message.class);
+
         if ("Greeting".equals(message.getMessageType())) {
             userService.greeting(message, session.getId());
             System.out.println("Geöffnet");
         } else {
-            User receiver = userService.findById(message.getReceiver());
+            messageService.saveMessage(message);
+            User receiver = userService.findById(message.getReceiverId());
             webSocketSessions.get(receiver.getSessionId()).sendMessage(messagePackage);
             System.out.println("Message");
         }

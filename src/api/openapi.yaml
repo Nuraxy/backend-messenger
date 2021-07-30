@@ -618,8 +618,36 @@ paths:
       security:
         - api_key: []
 
-
-
+  /messages:
+    get:
+      tags:
+        - message
+      summary: Get all messages from database
+      operationId: getAllMessages
+      parameters:
+      - name: chatId
+        required: true
+        in: path
+        schema:
+          type: string
+      - in: header
+        name: Authentication
+        description: 'Authentication: tokenValue:string'
+        schema:
+          type: string
+          format: uuid
+        required: true
+      responses:
+        200:
+          description: successful operation. Repeated for each user object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageResource'
+      security:
+        - api_key: []
 
 ########################################################################################################################
 components:
@@ -707,6 +735,25 @@ components:
           type: integer
           format: int64
         roleName:
+          type: string
+
+    MessageResource:
+      type: object
+      properties:
+        messageId:
+          type: integer
+          format: int64
+        messageType:
+          type: string
+        senderId:
+          type: integer
+          format: int64
+        receiverId:
+          type: integer
+          format: int64
+        chatId:
+          type: string
+        message:
           type: string
 
     TokenResource:

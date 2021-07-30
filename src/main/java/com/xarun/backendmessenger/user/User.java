@@ -2,18 +2,20 @@ package com.xarun.backendmessenger.user;
 
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.xarun.backendmessenger.user.userRoles.UserRole;
+import com.xarun.backendmessenger.webSocket.Message;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Table(name = "user")
 @TypeDef(name = "json", typeClass = JsonStringType.class)
 @Entity
 public class User {
 
-    @Column(name="id")
+    @Column(name="user_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

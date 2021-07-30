@@ -1,6 +1,7 @@
 package com.xarun.backendmessenger.webSocket.configuration;
 
 import com.xarun.backendmessenger.user.UserService;
+import com.xarun.backendmessenger.webSocket.MessageService;
 import com.xarun.backendmessenger.webSocket.handler.ChatWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +17,11 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     private final static String CHAT_ENDPOINT = "/chat";
     private final UserService userService;
+    private final MessageService messageService;
 
-    public WebSocketConfiguration(UserService userService) {
+    public WebSocketConfiguration(UserService userService, MessageService messageService) {
         this.userService = userService;
+        this.messageService = messageService;
     }
 
     @Override
@@ -30,6 +33,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Bean
     public WebSocketHandler getChatWebSocketHandler(){
-        return new ChatWebSocketHandler(userService);
+        return new ChatWebSocketHandler(userService, messageService);
     }
 }

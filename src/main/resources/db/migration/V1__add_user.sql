@@ -1,5 +1,5 @@
 create table user(
-    id bigint auto_increment,
+    user_id bigint auto_increment,
     user_role_id bigint DEFAULT 2,
     name VARCHAR(255) NOT NUll,
     password VARCHAR(255) NOT NUll,
@@ -12,7 +12,7 @@ create table user(
     session_id VARCHAR(255) NUll,
     public_key VARCHAR(1024) NULL,
 
-    constraint pk_user primary key (id),
+    constraint pk_user primary key (user_id),
     constraint unique_name unique (name),
     constraint unique_email unique (email)
 ) ENGINE = InnoDB
@@ -33,8 +33,8 @@ create table user_friend(
     confirmed boolean DEFAULT false,
 
     constraint pk_user_user primary key (id),
-    constraint fk_user_friend foreign key (user_id) references user(id),
-    constraint fk_friend_user foreign key (friend_id) references user(id),
+    constraint fk_user_friend foreign key (user_id) references user(user_id),
+    constraint fk_friend_user foreign key (friend_id) references user(user_id),
     constraint uc_user_relationship unique (user_id,friend_id)
 );
 
@@ -45,5 +45,5 @@ create table token(
     last_request DATETIME NOT NUll,
 
     constraint pk_token primary key (id),
-    constraint fk_token_user foreign key (user_id) references user(id)
+    constraint fk_token_user foreign key (user_id) references user(user_id)
 );

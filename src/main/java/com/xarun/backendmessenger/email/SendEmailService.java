@@ -43,8 +43,8 @@ public class SendEmailService {
                 "Mit freundlichen Grüßen, das ListApp-Team");
         javaMailSender.send(simpleMailMessage);
     }
-    //      Wichtig nicht löschen !!!!!!!
 
+//      Wichtig NICHT löschen !!!!!!!
 //    public void eventMessage(List<User> users) {
 //        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 //        simpleMailMessage.setFrom(todoListAccount);

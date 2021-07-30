@@ -1,10 +1,16 @@
 package com.xarun.backendmessenger.webSocket;
 
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import org.hibernate.annotations.TypeDef;
+
 import javax.persistence.*;
 
+@Table(name = "message")
+@TypeDef(name = "json", typeClass = JsonStringType.class)
+@Entity
 public class Message {
 
-    @Column(name="id")
+    @Column(name="message_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
@@ -12,11 +18,11 @@ public class Message {
     @Column(name="message_type")
     private String messageType;
 
-    @Column(name="sender")
-    private Long sender;
+    @Column(name="sender_id")
+    private Long senderId;
 
-    @Column(name="receiver")
-    private Long receiver;
+    @Column(name="receiver_id")
+    private Long receiverId;
 
     @Column(name="chat_id")
     private String chatId;
@@ -40,20 +46,20 @@ public class Message {
         this.messageType = messageType;
     }
 
-    public Long getSender() {
-        return sender;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSender(Long sender) {
-        this.sender = sender;
+    public void setSenderId(Long sender) {
+        this.senderId = sender;
     }
 
-    public Long getReceiver() {
-        return receiver;
+    public Long getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiver(Long receiver) {
-        this.receiver = receiver;
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getChatId() {
@@ -77,8 +83,8 @@ public class Message {
         return "Message{" +
                 "messageId=" + messageId +
                 ", messageType='" + messageType + '\'' +
-                ", sender=" + sender +
-                ", receiver=" + receiver +
+                ", sender=" + senderId +
+                ", receiver=" + receiverId +
                 ", chatId='" + chatId + '\'' +
                 ", message='" + message + '\'' +
                 '}';
