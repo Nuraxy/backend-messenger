@@ -27,6 +27,9 @@ public class Message {
     @Column(name="chat_id")
     private String chatId;
 
+    @Column(name="read_flag")
+    private Boolean readFlag;
+
     @Column(name="message")
     private String message;
 
@@ -70,6 +73,14 @@ public class Message {
         this.chatId = chatId;
     }
 
+    public Boolean getReadFlag() {
+        return readFlag;
+    }
+
+    public void setReadFlag(Boolean readFlag) {
+        this.readFlag = readFlag;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -78,15 +89,5 @@ public class Message {
         this.message = message;
     }
 
-    @Override
-    public String toString() {
-        return "Message{" +
-                "messageId=" + messageId +
-                ", messageType='" + messageType + '\'' +
-                ", sender=" + senderId +
-                ", receiver=" + receiverId +
-                ", chatId='" + chatId + '\'' +
-                ", message='" + message + '\'' +
-                '}';
-    }
+
 }

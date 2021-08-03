@@ -39,9 +39,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             userService.greeting(message, session.getId());
             System.out.println("Geöffnet");
         } else {
-            messageService.saveMessage(message);
+            Message savedMessage = messageService.saveMessage(message);
+            TextMessage savedTextMessage = new TextMessage(objectMapper.writeValueAsString(savedMessage));
             User receiver = userService.findById(message.getReceiverId());
-            webSocketSessions.get(receiver.getSessionId()).sendMessage(messagePackage);
+            webSocketSessions.get(receiver.getSessionId()).sendMessage(savedTextMessage);
             System.out.println("Message");
         }
     }

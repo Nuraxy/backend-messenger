@@ -17,6 +17,9 @@ public class MessageService {
     }
 
     public Message saveMessage (Message messageToSave) {
+        if (messageToSave.getReadFlag() == null){
+         messageToSave.setReadFlag(false);
+        }
         return messageRepository.save(messageToSave);
     }
 }
