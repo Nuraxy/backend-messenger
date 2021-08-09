@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface MessageMapper {
 
+//    @Mapping(target = "receiver_offline", ignore = true)
     MessageResource mapToResource(Message message);
 
     Message mapToMessageDomain(MessageResource messageResource);

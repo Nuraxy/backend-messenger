@@ -36,14 +36,33 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Message message = objectMapper.readValue(json, Message.class);
 
         if ("Greeting".equals(message.getMessageType())) {
-            userService.greeting(message, session.getId());
+            String sessionId = session.getId();
+            userService.greeting(message, sessionId);
+            for (Message missedMessage : messageService.getAllMissedMessages()) {
+                TextMessage missedMessageToSend = new TextMessage(objectMapper.writeValueAsString(missedMessage));
+                webSocketSessions.get(sessionId).sendMessage(missedMessageToSend);
+                missedMessage.setMessageMissed(false);
+                messageService.saveMessage(missedMessage);
+            }
             System.out.println("Geöffnet");
-        } else {
-            Message savedMessage = messageService.saveMessage(message);
-            TextMessage savedTextMessage = new TextMessage(objectMapper.writeValueAsString(savedMessage));
+        } else if ("Message".equals(message.getMessageType())) {
+            TextMessage savedTextMessage = new TextMessage(objectMapper.writeValueAsString(message));
             User receiver = userService.findById(message.getReceiverId());
-            webSocketSessions.get(receiver.getSessionId()).sendMessage(savedTextMessage);
+            if (webSocketSessions.get(receiver.getSessionId()) != null) {
+                webSocketSessions.get(receiver.getSessionId()).sendMessage(savedTextMessage);
+                message.setMessageMissed(false);
+                messageService.saveMessage(message);
+            } else {
+                message.setMessageMissed(true);
+                messageService.saveMessage(message);
+            }
             System.out.println("Message");
+        } else if ("OldMessage".equals(message.getMessageType())) {
+            String sessionId = session.getId();
+            for (Message oldMessage : messageService.getAllMessagesByIndex(message.getReceiverId(), message.getChatId())) {
+                TextMessage oldMessageToSend = new TextMessage(objectMapper.writeValueAsString(oldMessage));
+                webSocketSessions.get(sessionId).sendMessage(oldMessageToSend);
+            }
         }
     }
 // -----Groups----------------------------------------------------

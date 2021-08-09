@@ -27,11 +27,11 @@ public class Message {
     @Column(name="chat_id")
     private String chatId;
 
-    @Column(name="read_flag")
-    private Boolean readFlag;
-
     @Column(name="message")
     private String message;
+
+    @Column(name="message_missed")
+    private Boolean messageMissed;
 
     public Long getMessageId() {
         return messageId;
@@ -73,14 +73,6 @@ public class Message {
         this.chatId = chatId;
     }
 
-    public Boolean getReadFlag() {
-        return readFlag;
-    }
-
-    public void setReadFlag(Boolean readFlag) {
-        this.readFlag = readFlag;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -89,5 +81,11 @@ public class Message {
         this.message = message;
     }
 
+    public Boolean getMessageMissed() {
+        return messageMissed;
+    }
 
+    public void setMessageMissed(Boolean receiverOffline) {
+        this.messageMissed = receiverOffline;
+    }
 }

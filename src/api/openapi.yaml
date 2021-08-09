@@ -755,8 +755,6 @@ components:
           type: string
         message:
           type: string
-        readFlag:
-          type: boolean
 
     TokenResource:
       type: object
